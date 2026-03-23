@@ -1,14 +1,20 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useState } from 'react'
 import { WalletConnect } from './WalletConnect'
-import { Muse } from 'lucide-react'
+import { Muse, Menu, X } from 'lucide-react'
 
 export function Navbar() {
   const location = useLocation()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const isActive = (path: string) => location.pathname === path
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-secondary-200 bg-white/80 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-secondary-200 bg-white/80 backdrop-blur-sm nav-mobile">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-8">
@@ -54,10 +60,79 @@ export function Navbar() {
           </div>
           
           <div className="flex items-center space-x-4">
-            <WalletConnect />
+            <div className="hidden md:block">
+              <WalletConnect />
+            </div>
+            
+            <button
+              onClick={toggleMobileMenu}
+              className="md:hidden p-2 rounded-md text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
       </div>
+      
+      {/* Mobile menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-secondary-200">
+          <div className="px-4 py-2 space-y-1">
+            <Link
+              to="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                isActive('/') 
+                  ? 'text-primary-600 bg-primary-50' 
+                  : 'text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/explore"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                isActive('/explore') 
+                  ? 'text-primary-600 bg-primary-50' 
+                  : 'text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50'
+              }`}
+            >
+              Explore
+            </Link>
+            <Link
+              to="/mint"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                isActive('/mint') 
+                  ? 'text-primary-600 bg-primary-50' 
+                  : 'text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50'
+              }`}
+            >
+              Create
+            </Link>
+            <Link
+              to="/profile"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                isActive('/profile') 
+                  ? 'text-primary-600 bg-primary-50' 
+                  : 'text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50'
+              }`}
+            >
+              Profile
+            </Link>
+            <div className="pt-4 pb-2 border-t border-secondary-200">
+              <WalletConnect />
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
