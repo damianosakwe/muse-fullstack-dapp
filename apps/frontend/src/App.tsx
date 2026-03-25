@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
-import { HomePage } from "@/pages/HomePage";
 import { ExplorePage } from "@/pages/ExplorePage";
 import { MintPage } from "@/pages/MintPage";
 import { ProfilePage } from "@/pages/ProfilePage";
@@ -8,6 +7,7 @@ import { ArtworkPage } from "@/pages/ArtworkPage";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import { ErrorToast } from "@/components/ErrorToast";
 import { ErrorBoundary } from "@/components/ErrorDisplay";
+import { HomePage } from "./pages/HomePage";
 
 function App() {
   return (
