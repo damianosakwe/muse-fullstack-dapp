@@ -33,7 +33,7 @@ export function Grid({
   }
 
   const responsiveClasses = responsive
-    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-2 sm:px-4'
+    ? 'grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-2 xs:px-3 sm:px-4 md:px-6 overflow-safe'
     : ''
 
   const classes = [
