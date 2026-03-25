@@ -158,7 +158,7 @@ export function useTrendingArtworks() {
   })
 }
 
-// ─── Platform Stats ───────────────────────────────────────────────────────────
+// ─── Platform Stats ───────────────────────────────────────────────
 
 async function fetchPlatformStats(): Promise<PlatformStats> {
   const response = await fetch(`${API_BASE_URL}/api/artworks/stats`)
