@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ArtworkCard } from "../components/artwork/ArtworkCard";
+import { useTranslation } from "react-i18next";
 
 const MOCK_DATA = [
   {
@@ -23,6 +24,7 @@ const MOCK_DATA = [
 ];
 
 export default function SearchTest() {
+  const { t } = useTranslation()
   const [query, setQuery] = useState("");
 
   const filtered = MOCK_DATA.filter(
@@ -33,7 +35,7 @@ export default function SearchTest() {
 
   return (
     <div className="p-10 max-w-6xl mx-auto bg-white min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Issue #26 Verification Page</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('common.verification_page')}</h1>
       <div className="relative mb-8 max-w-md">
         <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
           <svg
@@ -53,7 +55,7 @@ export default function SearchTest() {
         </span>
         <input
           type="text"
-          placeholder="Search..."
+          placeholder={t('common.search_placeholder')}
           className="w-full pl-10 p-2 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
           onChange={(e) => setQuery(e.target.value)}
         />
