@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { login, getChallenge } from '@/controllers/authController'
 import { validate } from '@/middleware/validate'
-import { loginSchema } from '@/schemas/authSchemas'
+import { loginSchema, challengeSchema } from '@/schemas/authSchemas'
 
 import { authLimiter } from '@/middleware/rateLimitMiddleware'
 
@@ -18,7 +18,7 @@ const router = Router()
  *       200:
  *         description: Challenge nonce returned successfully
  */
-router.get('/challenge', authLimiter, getChallenge)
+router.get('/challenge', authLimiter, validate(challengeSchema), getChallenge)
 
 /**
  * @openapi
