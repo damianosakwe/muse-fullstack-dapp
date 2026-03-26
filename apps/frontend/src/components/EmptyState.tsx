@@ -1,5 +1,6 @@
 import { Search, Filter, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { useTranslation } from 'react-i18next'
 
 interface EmptyStateProps {
   type: 'no-results' | 'no-artworks' | 'no-favorites'
@@ -7,6 +8,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ type, onClearFilters }: EmptyStateProps) {
+  const { t } = useTranslation()
   const renderContent = (icon: React.ReactNode, title: string, text: string, showButton = false) => (
     <div 
       className="flex flex-col items-center justify-center py-16 px-4 text-center"
@@ -27,9 +29,9 @@ export function EmptyState({ type, onClearFilters }: EmptyStateProps) {
           onClick={onClearFilters}
           variant="outline"
           size="md"
-          aria-label="Clear all active filters"
+          aria-label={t('empty_state.clear_filters_aria')}
         >
-          Clear Filters
+          {t('empty_state.clear_filters')}
         </Button>
       )}
     </div>
@@ -38,8 +40,8 @@ export function EmptyState({ type, onClearFilters }: EmptyStateProps) {
   if (type === 'no-results') {
     return renderContent(
       <Filter className="w-8 h-8 text-secondary-400" />,
-      "No artworks found",
-      "Try adjusting your filters or search terms to find what you're looking for.",
+      t('empty_state.no_results_title'),
+      t('empty_state.no_results_desc'),
       true
     )
   }
@@ -47,14 +49,14 @@ export function EmptyState({ type, onClearFilters }: EmptyStateProps) {
   if (type === 'no-favorites') {
     return renderContent(
       <Heart className="w-8 h-8 text-secondary-400" />,
-      "No favorites yet",
-      "Heart your favorite AI artworks to save them for later and support the artists."
+      t('empty_state.no_favorites_title'),
+      t('empty_state.no_favorites_desc')
     )
   }
 
   return renderContent(
     <Search className="w-8 h-8 text-secondary-400" />,
-    "No artworks available",
-    "Be the first to mint and showcase your AI-generated artwork on the marketplace."
+    t('empty_state.no_artworks_title'),
+    t('empty_state.no_artworks_desc')
   )
 }

@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Wallet, ArtStation, Compass, PlusSquare, User } from 'lucide-react'
+import { Menu, X, Wallet, Compass, PlusSquare, User } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/utils/cn'
 
-const NAV_ITEMS = [
-  { label: 'Explore', path: '/explore', icon: Compass },
-  { label: 'Mint', path: '/mint', icon: PlusSquare },
-  { label: 'Profile', path: '/profile', icon: User },
-]
-
 export function Navigation() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
+
+  const NAV_ITEMS = [
+    { label: t('nav.explore'), path: '/explore', icon: Compass },
+    { label: t('nav.mint'), path: '/mint', icon: PlusSquare },
+    { label: t('nav.profile'), path: '/profile', icon: User },
+  ]
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
@@ -58,9 +60,9 @@ export function Navigation() {
               variant="primary"
               size="sm"
               leftIcon={<Wallet size={16} />}
-              aria-label="Connect wallet"
+              aria-label={t('nav.connect_wallet')}
             >
-              Connect
+              {t('nav.connect')}
             </Button>
           </div>
 
@@ -71,7 +73,7 @@ export function Navigation() {
               className="inline-flex items-center justify-center p-2 rounded-md text-secondary-600 hover:text-primary-600 hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
-              aria-label={isOpen ? "Close main menu" : "Open main menu"}
+              aria-label={isOpen ? t('nav.close_menu') : t('nav.open_menu')}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -85,7 +87,7 @@ export function Navigation() {
           className="md:hidden animate-in slide-in-from-top fixed inset-x-0 top-16 bg-white border-b border-secondary-100 shadow-lg" 
           id="mobile-menu"
           role="navigation"
-          aria-label="Mobile navigation"
+          aria-label={t('nav.open_menu')}
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {NAV_ITEMS.map((item) => (
@@ -112,10 +114,10 @@ export function Navigation() {
                 variant="primary"
                 fullWidth
                 leftIcon={<Wallet size={18} />}
-                aria-label="Connect wallet"
+                aria-label={t('nav.connect_wallet')}
                 onClick={closeMenu}
               >
-                Connect Wallet
+                {t('nav.connect_wallet')}
               </Button>
             </div>
           </div>
