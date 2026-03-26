@@ -10,6 +10,7 @@ import { errorHandler } from '@/middleware/errorHandler'
 import { notFound } from '@/middleware/notFound'
 import cacheService from '@/services/cacheService'
 import { createLogger } from '@/utils/logger'
+import { database } from '@/config/database'
 import artworkRoutes from '@/routes/artwork'
 import userRoutes from '@/routes/user'
 import aiRoutes from '@/routes/ai'
@@ -41,11 +42,15 @@ app.use(limiter)
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
-app.get('/health', (req, res) => {
+app.get('/health', async (req, res) => {
+  const dbHealth = await database.healthCheck()
+  
   res.status(200).json({
-    status: 'OK',
+    status: dbHealth.status === 'healthy' ? 'OK' : 'DEGRADED',
     timestamp: new Date().toISOString(),
     service: 'muse-backend',
+    database: dbHealth,
+    cache: cacheService.getCacheStats()
   })
 })
 
@@ -59,22 +64,32 @@ app.use('/api', imageOptimizerRoutes)
 app.use(notFound)
 app.use(errorHandler)
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   logger.info(`🚀 Muse Backend API running on port ${PORT}`)
   logger.info(`📊 Health check: http://localhost:${PORT}/health`)
   logger.info(`🗄️ Cache stats: ${JSON.stringify(cacheService.getCacheStats())}`)
+  
+  // Connect to database
+  try {
+    await database.connect()
+    logger.info('🗄️ Database connection established')
+  } catch (error) {
+    logger.error('Failed to connect to database:', error)
+  }
 })
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully')
   await cacheService.disconnect()
+  await database.disconnect()
   process.exit(0)
 })
 
 process.on('SIGINT', async () => {
   logger.info('SIGINT received, shutting down gracefully')
   await cacheService.disconnect()
+  await database.disconnect()
   process.exit(0)
 })
 
