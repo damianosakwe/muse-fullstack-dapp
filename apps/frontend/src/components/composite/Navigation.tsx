@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Wallet, Compass, PlusSquare, User, Activity } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
+import { NotificationButton } from '@/components/Notifications/NotificationButton'
 import { cn } from '@/utils/cn'
 
 export function Navigation() {
@@ -57,6 +58,7 @@ export function Navigation() {
                 {item.label}
               </Link>
             ))}
+            <NotificationButton />
             <Button
               variant="primary"
               size="sm"
@@ -110,7 +112,8 @@ export function Navigation() {
                 </div>
               </Link>
             ))}
-            <div className="pt-4 pb-2 px-3">
+            <div className="pt-4 pb-2 px-3 flex items-center justify-between">
+              <NotificationButton />
               <Button
                 variant="primary"
                 fullWidth

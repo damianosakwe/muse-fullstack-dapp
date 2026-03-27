@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { 
-  User, 
-  Bell, 
-  Shield, 
-  Palette, 
-  Wallet, 
-  Save, 
+import {
+  User,
+  Bell,
+  Shield,
+  Palette,
+  Wallet,
+  Save,
   Camera,
   Moon,
   Sun,
@@ -15,13 +15,14 @@ import {
   Plus,
   Smartphone
 } from 'lucide-react'
-import { 
-  UserSettings, 
+import {
+  UserSettings,
   ConnectedWallet
 } from '@/types'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { NotificationSettings } from '@/components/Notifications/NotificationSettings'
 import { cn } from '@/utils/cn'
 
 const defaultSettings: UserSettings = {
@@ -101,10 +102,10 @@ export function UserSettingsPage() {
   const handleSave = async () => {
     setIsSaving(true)
     setSaveMessage('')
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     setIsSaving(false)
     setSaveMessage('Settings saved successfully!')
     setTimeout(() => setSaveMessage(''), 3000)
@@ -270,87 +271,7 @@ export function UserSettingsPage() {
 
           {/* Notifications Settings */}
           {activeTab === 'notifications' && (
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Email Notifications</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {Object.entries(settings.notifications.email).map(([key, value]) => (
-                    <div key={key} className="flex items-center justify-between py-3 border-b border-secondary-100 last:border-0">
-                      <div>
-                        <p className="font-medium text-secondary-900 capitalize">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </p>
-                        <p className="text-sm text-secondary-500">
-                          {key === 'newSales' && 'Get notified when your artwork sells'}
-                          {key === 'newOffers' && 'Receive notifications for new offers'}
-                          {key === 'priceAlerts' && 'Alerts for price changes on watched items'}
-                          {key === 'newsletter' && 'Weekly newsletter with updates and featured artwork'}
-                          {key === 'security' && 'Important security notifications'}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => updateSettings('notifications', {
-                          email: { ...settings.notifications.email, [key]: !value }
-                        })}
-                        className={cn(
-                          'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-                          value ? 'bg-primary-600' : 'bg-secondary-200'
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
-                            value ? 'translate-x-6' : 'translate-x-1'
-                          )}
-                        />
-                      </button>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Push Notifications</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {Object.entries(settings.notifications.push).map(([key, value]) => (
-                    <div key={key} className="flex items-center justify-between py-3 border-b border-secondary-100 last:border-0">
-                      <div>
-                        <p className="font-medium text-secondary-900 capitalize">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </p>
-                        <p className="text-sm text-secondary-500">
-                          {key === 'newSales' && 'Push notifications for sales'}
-                          {key === 'newOffers' && 'Real-time offer notifications'}
-                          {key === 'priceAlerts' && 'Instant price change alerts'}
-                          {key === 'mentions' && 'When someone mentions you'}
-                          {key === 'follows' && 'New follower notifications'}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => updateSettings('notifications', {
-                          push: { ...settings.notifications.push, [key]: !value }
-                        })}
-                        className={cn(
-                          'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-                          value ? 'bg-primary-600' : 'bg-secondary-200'
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
-                            value ? 'translate-x-6' : 'translate-x-1'
-                          )}
-                        />
-                      </button>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
+            <NotificationSettings />
           )}
 
           {/* Privacy Settings */}
@@ -368,7 +289,7 @@ export function UserSettingsPage() {
                     <select
                       className="w-full rounded-lg border border-secondary-300 bg-white px-3 py-2 text-sm transition-colors focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                       value={settings.privacy.profileVisibility}
-                      onChange={(e) => updateSettings('privacy', { 
+                      onChange={(e) => updateSettings('privacy', {
                         profileVisibility: e.target.value as 'public' | 'private' | 'friends'
                       })}
                     >

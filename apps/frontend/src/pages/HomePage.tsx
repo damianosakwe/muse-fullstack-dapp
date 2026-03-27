@@ -2,6 +2,28 @@ import React from 'react'
 import { ActivityFeed } from '@/components/ActivityFeed'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Compass, PlusSquare, TrendingUp, Bell } from 'lucide-react'
+import { useNotificationActions } from '@/hooks/useNotificationActions'
+
+export function HomePage() {
+    const {
+        showSuccess,
+        showError,
+        showBidNotification,
+        showPurchaseNotification,
+        showMintNotification,
+        showFollowNotification
+    } = useNotificationActions()
+
+    const handleTestNotifications = () => {
+        showSuccess('Success!', 'This is a success notification test.')
+        setTimeout(() => showError('Error!', 'This is an error notification test.'), 1000)
+        setTimeout(() => showBidNotification('Digital Sunset', '0.5 ETH', 'Alice'), 2000)
+        setTimeout(() => showPurchaseNotification('Abstract Dreams', '0.3 ETH', 'Bob'), 3000)
+        setTimeout(() => showMintNotification('New Artwork'), 4000)
+        setTimeout(() => showFollowNotification('Charlie'), 5000)
+    }
+
 import { Compass, PlusSquare, TrendingUp } from 'lucide-react'
 
 export function HomePage() {
@@ -35,6 +57,26 @@ export function HomePage() {
                                 Start Creating
                             </Button>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Test Notifications Section */}
+            <section className="bg-white border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Test Notifications</h2>
+                        <p className="text-gray-600 mb-6">
+                            Click the button below to test different types of notifications
+                        </p>
+                        <Button
+                            variant="primary"
+                            size="lg"
+                            leftIcon={<Bell size={20} />}
+                            onClick={handleTestNotifications}
+                        >
+                            Test All Notifications
+                        </Button>
                     </div>
                 </div>
             </section>
