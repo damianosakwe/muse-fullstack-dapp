@@ -24,6 +24,9 @@ export function HomePage() {
         setTimeout(() => showFollowNotification('Charlie'), 5000)
     }
 
+import { Compass, PlusSquare, TrendingUp } from 'lucide-react'
+
+export function HomePage() {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Hero Section */}

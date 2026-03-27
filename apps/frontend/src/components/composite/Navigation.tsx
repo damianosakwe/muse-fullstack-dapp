@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Wallet, Compass, PlusSquare, User } from 'lucide-react'
+import { Menu, X, Wallet, Compass, PlusSquare, User, Activity } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { NotificationButton } from '@/components/Notifications/NotificationButton'
@@ -13,6 +13,7 @@ export function Navigation() {
 
   const NAV_ITEMS = [
     { label: t('nav.explore'), path: '/explore', icon: Compass },
+    { label: t('nav.activity'), path: '/activity', icon: Activity },
     { label: t('nav.mint'), path: '/mint', icon: PlusSquare },
     { label: t('nav.profile'), path: '/profile', icon: User },
   ]

@@ -428,6 +428,48 @@ export interface SecuritySettings {
   loginNotifications: boolean
 }
 
+// Collection Types
+export interface Collection {
+  id: string
+  name: string
+  description?: string
+  coverImage?: string
+  isPublic: boolean
+  owner: string
+  artworkIds: string[]
+  createdAt: string
+  updatedAt: string
+  artworkCount: number
+  stats?: CollectionStats
+}
+
+export interface CreateCollectionForm {
+  name: string
+  description?: string
+  isPublic: boolean
+  coverImage?: string
+}
+
+export interface UpdateCollectionForm extends Partial<CreateCollectionForm> {
+  id: string
+}
+
+export interface CollectionSearchParams {
+  query?: string
+  owner?: string
+  isPublic?: boolean
+  page?: number
+  limit?: number
+}
+
+export interface CollectionsResponse extends PaginatedResponse<Collection> {}
+
+export interface CollectionAction {
+  type: 'add' | 'remove'
+  artworkId: string
+  collectionId: string
+}
+
 // Theme Types
 export interface Theme {
   colors: {
