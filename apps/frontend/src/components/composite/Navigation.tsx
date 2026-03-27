@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Wallet, Compass, PlusSquare, User } from 'lucide-react'
+import { Menu, X, Wallet, Compass, PlusSquare, User, Activity } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/utils/cn'
@@ -12,6 +12,7 @@ export function Navigation() {
 
   const NAV_ITEMS = [
     { label: t('nav.explore'), path: '/explore', icon: Compass },
+    { label: t('nav.activity'), path: '/activity', icon: Activity },
     { label: t('nav.mint'), path: '/mint', icon: PlusSquare },
     { label: t('nav.profile'), path: '/profile', icon: User },
   ]
@@ -20,7 +21,7 @@ export function Navigation() {
   const closeMenu = () => setIsOpen(false)
 
   return (
-    <nav 
+    <nav
       className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-secondary-100"
       aria-label="Main navigation"
     >
@@ -28,8 +29,8 @@ export function Navigation() {
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="flex items-center space-x-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-md"
               aria-label="Muse Home"
               onClick={closeMenu}
@@ -83,8 +84,8 @@ export function Navigation() {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div 
-          className="md:hidden animate-in slide-in-from-top fixed inset-x-0 top-16 bg-white border-b border-secondary-100 shadow-lg" 
+        <div
+          className="md:hidden animate-in slide-in-from-top fixed inset-x-0 top-16 bg-white border-b border-secondary-100 shadow-lg"
           id="mobile-menu"
           role="navigation"
           aria-label={t('nav.open_menu')}
@@ -96,8 +97,8 @@ export function Navigation() {
                 to={item.path}
                 className={cn(
                   'block px-3 py-2 rounded-md text-base font-medium',
-                  location.pathname === item.path 
-                    ? 'bg-primary-50 text-primary-600' 
+                  location.pathname === item.path
+                    ? 'bg-primary-50 text-primary-600'
                     : 'text-secondary-600 hover:bg-secondary-50 hover:text-primary-600'
                 )}
                 aria-current={location.pathname === item.path ? 'page' : undefined}
