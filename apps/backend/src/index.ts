@@ -3,9 +3,9 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import compression from 'compression'
-import morgan from 'morgan'
 
 import { requestContext } from '@/middleware/requestContext'
+import { requestLogger } from '@/middleware/requestLogger'
 import { errorHandler } from '@/middleware/errorHandler'
 import { notFoundHandler } from '@/middleware/notFound'
 import { createLogger } from '@/utils/logger'
@@ -41,7 +41,7 @@ app.use(requestContext)
 
 // ── HTTP Logging ─────────────────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('combined'))
+  app.use(requestLogger)
 }
 
 // ── Health Check ─────────────────────────────────────────────────────────────

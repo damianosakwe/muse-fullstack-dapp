@@ -1,4 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
+import { createLogger } from '@/utils/logger'
+
+const logger = createLogger('HTTP')
 
 // ---------------------------------------------------------------------------
 // AppError — typed, operational error class
@@ -83,16 +86,15 @@ export const errorHandler = (
 
   // Log full details server-side
   const requestId = (req as Request & { requestId?: string }).requestId
-  const logPrefix = requestId ? `[${requestId}]` : ''
-  console.error(
-    `${logPrefix} [${new Date().toISOString()}] [ERROR] ${statusCode} ${code}: ${err.message}`,
-    {
-      stack: err.stack,
-      path: req.path,
-      method: req.method,
-      ...(isAppError && err.details ? { details: err.details } : {}),
-    }
-  )
+  logger.error(`${statusCode} ${code}: ${err.message}`, {
+    requestId,
+    statusCode,
+    code,
+    path: req.path,
+    method: req.method,
+    stack: err.stack,
+    ...(isAppError && err.details ? { details: err.details } : {}),
+  })
 
   res.status(statusCode).json({
     success: false,
