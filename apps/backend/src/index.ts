@@ -10,6 +10,7 @@ import { errorHandler } from '@/middleware/errorHandler'
 import { notFoundHandler } from '@/middleware/notFound'
 import { createLogger } from '@/utils/logger'
 import databaseService from '@/services/databaseService'
+import { jobQueueService } from '@/services/jobQueueService'
 
 // Route imports
 import authRoutes from '@/routes/auth'
@@ -18,8 +19,11 @@ import userRoutes from '@/routes/user'
 import aiRoutes from '@/routes/ai'
 import metadataRoutes from '@/routes/metadata'
 import cacheRoutes from '@/routes/cache'
+import cacheManagementRoutes from '@/routes/cacheManagement'
 import imageOptimizerRoutes from '@/routes/imageOptimizer'
 import favoriteRoutes from '@/routes/favorites'
+import apiKeyRoutes from '@/routes/apiKeys'
+import jobRoutes from '@/routes/jobs'
 
 const logger = createLogger('App')
 const PORT = parseInt(process.env.PORT || '3001', 10)
@@ -28,10 +32,30 @@ const app = express()
 
 // ── Security & Parsing Middleware ────────────────────────────────────────────
 app.use(helmet())
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
+  : ['*']
+
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) {
+      return callback(null, true)
+    }
+    if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+    callback(new Error('Not allowed by CORS'))
+  },
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   credentials: true,
-}))
+  optionsSuccessStatus: 204,
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
+
 app.use(compression())
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
@@ -61,8 +85,11 @@ app.use('/api/users', userRoutes)
 app.use('/api/ai', aiRoutes)
 app.use('/api/metadata', metadataRoutes)
 app.use('/api/cache', cacheRoutes)
+app.use('/api/cache', cacheManagementRoutes)
 app.use('/api/images', imageOptimizerRoutes)
 app.use('/api/favorites', favoriteRoutes)
+app.use('/api/keys', apiKeyRoutes)
+app.use('/api/jobs', jobRoutes)
 
 // ── 404 & Global Error Handlers ──────────────────────────────────────────────
 app.use(notFoundHandler)
@@ -74,6 +101,13 @@ async function start() {
     await databaseService.connect()
     logger.info('Database connected successfully')
 
+    try {
+      await jobQueueService.initialize()
+      logger.info('Job queue service initialized')
+    } catch (error) {
+      logger.error('Failed to initialize job queue service:', { error })
+    }
+
     const server = app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`, { port: PORT, env: process.env.NODE_ENV })
     })
@@ -83,6 +117,7 @@ async function start() {
       logger.warn(`Received ${signal} — shutting down gracefully`)
       server.close(async () => {
         try {
+          await jobQueueService.shutdown()
           await databaseService.disconnect()
           logger.info('Database disconnected. Server closed.')
           process.exit(0)
