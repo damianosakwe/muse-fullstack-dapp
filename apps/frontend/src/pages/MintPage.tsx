@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { ErrorDisplay } from '@/components/ErrorDisplay'
 import { Button } from '@/components/ui/Button'
 import { MintStepper } from '@/components/MintStepper'
 import { useErrorContext } from '@/contexts/ErrorContext'
 import { aiService } from '@/services/aiService'
+import { OfflineSyncIndicator } from '@/components/OfflineSyncIndicator'
+import { TransactionStatusDisplay } from '@/components/TransactionStatusDisplay'
+import { offlineSyncService } from '@/services/offlineSyncService'
+import { useOfflineStatus } from '@/hooks/useOfflineStatus'
 import { ErrorHandler, type AppError } from '@/utils/errorHandler'
 
 interface GenerateState {
@@ -14,14 +18,27 @@ interface GenerateState {
 
 export function MintPage() {
     const { showError } = useErrorContext()
+    const { isOnline } = useOfflineStatus()
     const [prompt, setPrompt] = useState('')
     const [style, setStyle] = useState('')
     const [error, setError] = useState<AppError | null>(null)
+    const [mintTransactionHashes, setMintTransactionHashes] = useState<string[]>([])
     const [state, setState] = useState<GenerateState>({
         imageUrl: null,
         generationId: null,
         status: 'idle',
     })
+
+    const handleMintComplete = useCallback((success: boolean, transactionHash?: string) => {
+        if (success && transactionHash) {
+            setMintTransactionHashes((prev) => [...prev, transactionHash])
+        }
+    }, [])
+
+    const handleQueueOffline = useCallback(async (payload: any) => {
+        const id = await offlineSyncService.queueTransaction(payload)
+        return id
+    }, [])
 
     const handleGenerate = async () => {
         if (!prompt.trim()) {
@@ -150,10 +167,19 @@ export function MintPage() {
                 <section className="bg-white border border-gray-200 rounded-xl p-5">
                     <h2 className="text-lg font-semibold text-gray-900 mb-2">2. Mint on Blockchain</h2>
                     <p className="text-sm text-gray-600 mb-4">
-                        Complete metadata, upload media, and sign transaction to mint your NFT.
+                        {isOnline 
+                          ? "Complete metadata and sign transaction to mint your NFT." 
+                          : "You are offline. Transactions will be queued and synced when you reconnect."}
                     </p>
-                    <MintStepper />
+                    <MintStepper 
+                        onMintComplete={handleMintComplete}
+                        isOffline={!isOnline}
+                        onQueueOffline={handleQueueOffline}
+                    />
                 </section>
+
+                <TransactionStatusDisplay transactionHashes={mintTransactionHashes} />
+                <OfflineSyncIndicator />
             </div>
         </div>
     )
