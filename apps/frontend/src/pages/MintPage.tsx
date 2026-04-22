@@ -5,6 +5,7 @@ import { MintStepper } from '@/components/MintStepper'
 import { useErrorContext } from '@/contexts/ErrorContext'
 import { aiService } from '@/services/aiService'
 import { ErrorHandler, type AppError } from '@/utils/errorHandler'
+import { ComponentErrorBoundary, AsyncErrorBoundary } from '@/components/error'
 
 interface GenerateState {
     imageUrl: string | null
@@ -152,7 +153,14 @@ export function MintPage() {
                     <p className="text-sm text-gray-600 mb-4">
                         Complete metadata, upload media, and sign transaction to mint your NFT.
                     </p>
-                    <MintStepper />
+                    <ComponentErrorBoundary 
+                        name="MintStepper" 
+                        showRetry={true}
+                        showBack={true}
+                        customMessage="The minting process encountered an error. Your artwork has not been minted yet."
+                    >
+                        <MintStepper />
+                    </ComponentErrorBoundary>
                 </section>
             </div>
         </div>
